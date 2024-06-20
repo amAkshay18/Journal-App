@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:journal/models/note.dart';
-import 'package:journal/repository/notes_repository.dart';
+import 'package:journal/provider/notes/notes_provider.dart';
+import 'package:provider/provider.dart';
 
 class AddNoteScreen extends StatefulWidget {
   final Note? note;
@@ -116,7 +117,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
       description: _description.text,
       createdAt: DateTime.now(),
     );
-    await NotesRepository.insert(note: note);
+    Provider.of<NotesProvider>(context, listen: false).insert(note: note);
   }
 
   _updateNote() async {
@@ -126,12 +127,14 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
       description: _description.text,
       createdAt: widget.note!.createdAt,
     );
-    await NotesRepository.update(note: note);
+    // await NotesRepository.update(note: note);
+    Provider.of<NotesProvider>(context, listen: false).update(note: note);
   }
 
   _deleteNote() async {
-    NotesRepository.delete(note: widget.note!).then((e) {
-      Navigator.pop(context);
-    });
+    Provider.of<NotesProvider>(context, listen: false)
+        .delete(note: widget.note!)
+        .then((idDone) {});
+    Navigator.pop(context);
   }
 }
