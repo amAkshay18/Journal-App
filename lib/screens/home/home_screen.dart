@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:journal/repository/notes_repository.dart';
 import 'package:journal/screens/add_note/add_note_screen.dart';
 import 'package:journal/screens/home/widgets/item_note.dart';
 
@@ -19,15 +20,27 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         centerTitle: true,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(15),
-        children: const [
-          ItemNote(),
-          ItemNote(),
-          ItemNote(),
-          ItemNote(),
-          ItemNote(),
-        ],
+      body: FutureBuilder(
+        future: NotesRepository.getNotes(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.data == null || snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text('Empty'),
+              );
+            }
+            return ListView(
+              padding: const EdgeInsets.all(15),
+              children: [
+                for (var note in snapshot.data!)
+                  ItemNote(
+                    note: note,
+                  ),
+              ],
+            );
+          }
+          return const SizedBox();
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

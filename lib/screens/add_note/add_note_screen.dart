@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:journal/models/note.dart';
+import 'package:journal/repository/notes_repository.dart';
+import 'package:journal/screens/home/home_screen.dart';
 
 class AddNoteScreen extends StatefulWidget {
   const AddNoteScreen({super.key});
@@ -15,7 +18,22 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add note'),
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.done))],
+        actions: [
+          IconButton(
+            onPressed: () {
+              _insertNote();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.done,
+            ),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -47,5 +65,14 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
         ),
       ),
     );
+  }
+
+  _insertNote() async {
+    final note = Note(
+      title: _title.text,
+      description: _description.text,
+      createdAt: DateTime.now(),
+    );
+    await NotesRepository.insert(note: note);
   }
 }

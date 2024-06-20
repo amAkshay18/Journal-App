@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:journal/models/note.dart';
 
 class ItemNote extends StatelessWidget {
-  const ItemNote({super.key});
+  final Note note;
+  const ItemNote({super.key, required this.note});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,7 @@ class ItemNote extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        'This is the title',
+                        note.title,
                         style: Theme.of(context).textTheme.titleMedium,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -61,9 +63,9 @@ class ItemNote extends StatelessWidget {
                     )
                   ],
                 ),
-                const Text(
-                  'Here is the Description of this note Here is the Description of this noteHere is the Description of this noteHere is the Description of this noteHere is the Description of this noteHere is the Description of this noteHere is the Description of this noteHere is the Description of this note',
-                  style: TextStyle(
+                Text(
+                  note.description,
+                  style: const TextStyle(
                     fontWeight: FontWeight.w300,
                     height: 1.5,
                   ),
