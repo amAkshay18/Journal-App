@@ -41,4 +41,19 @@ class NotesRepository {
       );
     });
   }
+
+  static update({required Note note}) async {
+    final db = await _database();
+    await db.update(
+      _tableName,
+      note.toMap(),
+      where: 'id = ?',
+      whereArgs: [note.id],
+    );
+  }
+
+  static delete({required Note note}) async {
+    final db = await _database();
+    await db.delete(_tableName, where: 'id = ?', whereArgs: [note.id]);
+  }
 }

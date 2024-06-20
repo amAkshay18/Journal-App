@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:journal/models/note.dart';
 import 'package:journal/repository/notes_repository.dart';
-import 'package:journal/screens/home/home_screen.dart';
 
 class AddNoteScreen extends StatefulWidget {
-  const AddNoteScreen({super.key});
+  final Note? note;
+  const AddNoteScreen({super.key, this.note});
 
   @override
   State<AddNoteScreen> createState() => _AddNoteScreenState();
@@ -13,26 +13,69 @@ class AddNoteScreen extends StatefulWidget {
 class _AddNoteScreenState extends State<AddNoteScreen> {
   final _title = TextEditingController();
   final _description = TextEditingController();
+
+  @override
+  void initState() {
+    if (widget.note != null) {
+      _title.text = widget.note!.title;
+      _description.text = widget.note!.description;
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add note'),
         actions: [
+          widget.note != null
+              ? IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        content: const Text(
+                            'Are you sure want to delete this note?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              'No',
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              _deleteNote();
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              'Yes',
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.delete_outline,
+                  ),
+                )
+              : const SizedBox(),
           IconButton(
-            onPressed: () {
-              _insertNote();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const HomeScreen(),
-                ),
-              );
-            },
+            onPressed: widget.note == null ? _insertNote : _updateNote,
+            // Navigator.pushReplacement(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => const HomeScreen(),
+            //   ),
+            // );
             icon: const Icon(
               Icons.done,
             ),
-          )
+          ),
         ],
       ),
       body: Padding(
@@ -74,5 +117,21 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
       createdAt: DateTime.now(),
     );
     await NotesRepository.insert(note: note);
+  }
+
+  _updateNote() async {
+    final note = Note(
+      id: widget.note!.id!,
+      title: _title.text,
+      description: _description.text,
+      createdAt: widget.note!.createdAt,
+    );
+    await NotesRepository.update(note: note);
+  }
+
+  _deleteNote() async {
+    NotesRepository.delete(note: widget.note!).then((e) {
+      Navigator.pop(context);
+    });
   }
 }

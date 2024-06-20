@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:journal/models/note.dart';
+import 'package:journal/screens/add_note/add_note_screen.dart';
 
 class ItemNote extends StatelessWidget {
   final Note note;
@@ -12,35 +13,46 @@ class ItemNote extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.red,
-            ),
-            child: Column(
-              children: [
-                Text(
-                  DateFormat(DateFormat.ABBR_MONTH).format(note.createdAt),
-                  style: const TextStyle(
-                    color: Colors.white70,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddNoteScreen(
+                      note: note,
+                    ),
+                  ));
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.red,
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    DateFormat(DateFormat.ABBR_MONTH).format(note.createdAt),
+                    style: const TextStyle(
+                      color: Colors.white70,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  DateFormat(DateFormat.DAY).format(note.createdAt),
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  note.createdAt.year.toString(),
-                  // DateFormat(DateFormat.YEAR).format(note.createdAt),
-                  style: const TextStyle(color: Colors.white70),
-                ),
-              ],
+                  const SizedBox(height: 3),
+                  Text(
+                    DateFormat(DateFormat.DAY).format(note.createdAt),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    note.createdAt.year.toString(),
+                    // DateFormat(DateFormat.YEAR).format(note.createdAt),
+                    style: const TextStyle(color: Colors.white70),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(width: 15),

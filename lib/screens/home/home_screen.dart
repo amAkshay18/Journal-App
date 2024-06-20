@@ -19,6 +19,14 @@ class _HomeScreenState extends State<HomeScreen> {
           'My Dairy',
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () => setState(() {}),
+            icon: const Icon(
+              Icons.refresh,
+            ),
+          ),
+        ],
       ),
       body: FutureBuilder(
         future: NotesRepository.getNotes(),
